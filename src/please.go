@@ -415,6 +415,7 @@ var opts struct {
 		} `command:"rules" description:"Prints built-in rules to stdout as JSON"`
 		Changes struct {
 			Since            string `short:"s" long:"since" default:"origin/master" description:"Revision to compare against"`
+			Reverse          bool `long:"reverse" description:"Whether to return a reversed change list, i.e. including targets which were removed, but not targets which were added"`
 			IncludeDependees string `long:"include_dependees" default:"none" choice:"none" choice:"direct" choice:"transitive" description:"Deprecated: use level 1 for direct and -1 for transitive. Include direct or transitive dependees of changed targets."`
 			Level            int    `long:"level" default:"-2" description:"Levels of the dependencies of changed targets (-1 for unlimited)." default-mask:"0"`
 			Inexact          bool   `long:"inexact" description:"Calculate changes more quickly and without doing any SCM checkouts, but may miss some targets."`
@@ -876,7 +877,7 @@ var buildFunctions = map[string]func() int{
 		case level == -2:
 			level = 0
 		}
-		runInexact := func(files []string) int {
+		runInexact := func(files []string) int {  // TODO: Implement reverse here?
 			return runQuery(true, core.WholeGraph, func(state *core.BuildState) {
 				for _, target := range query.Changes(state, files, level) {
 					fmt.Println(target.String())
@@ -909,6 +910,9 @@ var buildFunctions = map[string]func() int{
 		success, after := runBuild(core.WholeGraph, false, false, false)
 		if !success {
 			return 1
+		}
+		if opts.Query.Reverse {
+			after, before = before, after
 		}
 		for _, target := range query.DiffGraphs(before, after, files, level) {
 			fmt.Println(target.String())
