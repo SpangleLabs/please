@@ -101,7 +101,7 @@ func (c *Client) buildCommand(target *core.BuildTarget, inputRoot *pb.Directory,
 		}
 		sort.Strings(keys)
 		for _, k := range keys {
-			commandPrefixBuilder.WriteString(fmt.Sprintf("export %s=%s && ", k, shellescape.Quote(target.Env[k])))
+			_, _ = fmt.Fprintf(&commandPrefixBuilder, "export %s=%s && ", k, shellescape.Quote(target.Env[k]))
 		}
 	}
 

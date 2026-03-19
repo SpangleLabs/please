@@ -633,9 +633,9 @@ func unbuiltTargetsMessage(graph *core.BuildGraph) string {
 	var msgBuilder strings.Builder
 	for _, target := range graph.AllTargets() {
 		if target.State() == core.Active {
-			msgBuilder.WriteString(fmt.Sprintf("  %s", target.Label))
+			_, _ = fmt.Fprintf(&msgBuilder, "  %s", target.Label)
 		} else if target.State() == core.Pending {
-			msgBuilder.WriteString(fmt.Sprintf("  %s (pending build)\n", target.Label))
+			_, _ = fmt.Fprintf(&msgBuilder, "  %s (pending build)\n", target.Label)
 		}
 	}
 	if msgBuilder.Len() == 0 {

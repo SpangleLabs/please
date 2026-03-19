@@ -210,11 +210,11 @@ func formatPluginHelpMessage(message, description, docSite string, options map[s
 		if def != "" {
 			def = " (" + def + ")"
 		}
-		configOptionsBuilder.WriteString(fmt.Sprintf("${BLUE}   %s${RESET} ${GREEN}(%s)${RESET}${WHITE}%s${RESET} %s\n",
+		_, _ = fmt.Fprintf(&configOptionsBuilder, "${BLUE}   %s${RESET} ${GREEN}(%s)${RESET}${WHITE}%s${RESET} %s\n",
 			key,
 			valueType,
 			def,
-			v.Help))
+			v.Help)
 	}
 	if configOptionsBuilder.Len() != 0 {
 		message += "\n${BOLD_YELLOW}This plugin has the following options:${RESET}\n" + configOptionsBuilder.String()
@@ -222,7 +222,7 @@ func formatPluginHelpMessage(message, description, docSite string, options map[s
 
 	var buildDefsBuilder strings.Builder
 	for k, v := range buildRulesMap {
-		buildDefsBuilder.WriteString(fmt.Sprintf("${BLUE}   %v${RESET}", strings.ToLower(k)))
+		_, _ = fmt.Fprintf(&buildDefsBuilder, "${BLUE}   %v${RESET}", strings.ToLower(k))
 		var argListBuilder strings.Builder
 		argListBuilder.WriteString("(")
 		for i, arg := range v.FuncDef.Arguments {
@@ -233,7 +233,7 @@ func formatPluginHelpMessage(message, description, docSite string, options map[s
 				argListBuilder.WriteString(")")
 			}
 		}
-		buildDefsBuilder.WriteString(fmt.Sprintf("${GREEN}%v${RESET}\n", argListBuilder.String()))
+		_, _ = fmt.Fprintf(&buildDefsBuilder, "${GREEN}%v${RESET}\n", argListBuilder.String())
 	}
 	if buildDefsBuilder.Len() != 0 {
 		message += "\n${BOLD_YELLOW}And provides the following build defs:${RESET}\n" + buildDefsBuilder.String()
